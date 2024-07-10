@@ -242,7 +242,7 @@ public class HealthUtil {
         Method getName = null;
         try {
             if (entity.getCustomName() == null)
-                getName = entity.getClass().getMethod("getName", (Class<?>[]) null);
+                getName = entity.getClass().getMethod("getName");
         } catch (NoSuchMethodException | SecurityException ignored) {
         }
 
@@ -268,21 +268,22 @@ public class HealthUtil {
         message = ChatColor.translateAlternateColorCodes('&', message);
 
         try {
-            if (plugin.configStore.mcVersion.contains("v1_17") || plugin.configStore.mcVersion.contains("v1_18") || plugin.configStore.mcVersion.contains("v1_19") || plugin.configStore.mcVersion.contains("v1_20")) {
+            if (plugin.configStore.mcRemappedPackage.contains("v1_17") || plugin.configStore.mcRemappedPackage.contains("v1_18") || plugin.configStore.mcRemappedPackage.contains("v1_19") || plugin.configStore.mcRemappedPackage.contains("v1_20")
+                    || plugin.configStore.mcVersion.contains("1.21")) {
                 new NewAction(player, message);
-            } else if (plugin.configStore.mcVersion.contains("v1_16")) {
+            } else if (plugin.configStore.mcRemappedPackage.contains("v1_16")) {
                 new PreAction(player, message);
-            } else if (plugin.configStore.mcVersion.equals("v1_12_R1") || plugin.configStore.mcVersion.startsWith("v1_13") || plugin.configStore.mcVersion.startsWith("v1_14_") || plugin.configStore.mcVersion.startsWith("v1_15_")) {
+            } else if (plugin.configStore.mcRemappedPackage.equals("v1_12_R1") || plugin.configStore.mcRemappedPackage.startsWith("v1_13") || plugin.configStore.mcRemappedPackage.startsWith("v1_14_") || plugin.configStore.mcRemappedPackage.startsWith("v1_15_")) {
                 new LegacyPreAction(player, message);
-            } else if (!(plugin.configStore.mcVersion.equalsIgnoreCase("v1_8_R1") || plugin.configStore.mcVersion.contains("v1_7_"))) {
-                Class<?> c1 = Class.forName("org.bukkit.craftbukkit." + plugin.configStore.mcVersion + ".entity.CraftPlayer");
+            } else if (!(plugin.configStore.mcRemappedPackage.equalsIgnoreCase("v1_8_R1") || plugin.configStore.mcRemappedPackage.contains("v1_7_"))) {
+                Class<?> c1 = Class.forName("org.bukkit.craftbukkit." + plugin.configStore.mcRemappedPackage + ".entity.CraftPlayer");
                 Object p = c1.cast(player);
                 Object ppoc;
-                Class<?> c4 = Class.forName("net.minecraft.server." + plugin.configStore.mcVersion + ".PacketPlayOutChat");
-                Class<?> c5 = Class.forName("net.minecraft.server." + plugin.configStore.mcVersion + ".Packet");
+                Class<?> c4 = Class.forName("net.minecraft.server." + plugin.configStore.mcRemappedPackage + ".PacketPlayOutChat");
+                Class<?> c5 = Class.forName("net.minecraft.server." + plugin.configStore.mcRemappedPackage + ".Packet");
 
-                Class<?> c2 = Class.forName("net.minecraft.server." + plugin.configStore.mcVersion + ".ChatComponentText");
-                Class<?> c3 = Class.forName("net.minecraft.server." + plugin.configStore.mcVersion + ".IChatBaseComponent");
+                Class<?> c2 = Class.forName("net.minecraft.server." + plugin.configStore.mcRemappedPackage + ".ChatComponentText");
+                Class<?> c3 = Class.forName("net.minecraft.server." + plugin.configStore.mcRemappedPackage + ".IChatBaseComponent");
                 Object o = c2.getConstructor(new Class<?>[]{String.class}).newInstance(message);
                 ppoc = c4.getConstructor(new Class<?>[]{c3, byte.class}).newInstance(o, (byte) 2);
 
@@ -295,14 +296,14 @@ public class HealthUtil {
                 Method sendPacket = playerConnection.getClass().getDeclaredMethod("sendPacket", c5);
                 sendPacket.invoke(playerConnection, ppoc);
             } else {
-                Class<?> c1 = Class.forName("org.bukkit.craftbukkit." + plugin.configStore.mcVersion + ".entity.CraftPlayer");
+                Class<?> c1 = Class.forName("org.bukkit.craftbukkit." + plugin.configStore.mcRemappedPackage + ".entity.CraftPlayer");
                 Object p = c1.cast(player);
                 Object ppoc;
-                Class<?> c4 = Class.forName("net.minecraft.server." + plugin.configStore.mcVersion + ".PacketPlayOutChat");
-                Class<?> c5 = Class.forName("net.minecraft.server." + plugin.configStore.mcVersion + ".Packet");
+                Class<?> c4 = Class.forName("net.minecraft.server." + plugin.configStore.mcRemappedPackage + ".PacketPlayOutChat");
+                Class<?> c5 = Class.forName("net.minecraft.server." + plugin.configStore.mcRemappedPackage + ".Packet");
 
-                Class<?> c2 = Class.forName("net.minecraft.server." + plugin.configStore.mcVersion + ".ChatSerializer");
-                Class<?> c3 = Class.forName("net.minecraft.server." + plugin.configStore.mcVersion + ".IChatBaseComponent");
+                Class<?> c2 = Class.forName("net.minecraft.server." + plugin.configStore.mcRemappedPackage + ".ChatSerializer");
+                Class<?> c3 = Class.forName("net.minecraft.server." + plugin.configStore.mcRemappedPackage + ".IChatBaseComponent");
                 Method m3 = c2.getDeclaredMethod("a", String.class);
                 Object cbc = c3.cast(m3.invoke(c2, "{\"text\": \"" + message + "\"}"));
                 ppoc = c4.getConstructor(new Class<?>[]{c3, byte.class}).newInstance(cbc, (byte) 2);
